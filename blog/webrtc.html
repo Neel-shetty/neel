@@ -1,200 +1,434 @@
-<p>WebRTC is an open-source project that enables real-time communication between browsers and mobile applications through a simple set of APIs. It stands for &quot;Web Real-Time Communication&quot; and has become a popular technology used in various applications, including video conferencing, voice calling, and file sharing. Many popular apps such as Discord and Google Meet use WebRTC to enable high-quality real-time communication between users. By leveraging its peer-to-peer connection, WebRTC offers efficient communication, low latency, and secure communication. Let&#39;s take a closer look at how this technology works</p>
-<p>In this blog, we will go over how a WebRTC works from a layman&#39;s perspective and a technical perspective. Finally, we will implement a basic messaging feature using webRTC.</p>
+<link rel="stylesheet" href="../global.css" />
+<p>
+  WebRTC is an open-source project that enables real-time communication between
+  browsers and mobile applications through a simple set of APIs. It stands for
+  &quot;Web Real-Time Communication&quot; and has become a popular technology
+  used in various applications, including video conferencing, voice calling, and
+  file sharing. Many popular apps such as Discord and Google Meet use WebRTC to
+  enable high-quality real-time communication between users. By leveraging its
+  peer-to-peer connection, WebRTC offers efficient communication, low latency,
+  and secure communication. Let&#39;s take a closer look at how this technology
+  works
+</p>
+<p>
+  In this blog, we will go over how a WebRTC works from a layman&#39;s
+  perspective and a technical perspective. Finally, we will implement a basic
+  messaging feature using webRTC.
+</p>
 <h2 id="the-method-behind-the-madness">The Method Behind The Madness</h2>
-<p>Let&#39;s explain it in layman&#39;s terms first for the non-technical folks reading this.</p>
-<p>Imagine you have 2 friends A and B, but A and B are not friends. You three plan to go to a movie. Unfortunately, you are busy with some work and can&#39;t coordinate between A and B to choose the place and time to book the tickets. So what would you do in this situation?</p>
+<p>
+  Let&#39;s explain it in layman&#39;s terms first for the non-technical folks
+  reading this.
+</p>
+<p>
+  Imagine you have 2 friends A and B, but A and B are not friends. You three
+  plan to go to a movie. Unfortunately, you are busy with some work and
+  can&#39;t coordinate between A and B to choose the place and time to book the
+  tickets. So what would you do in this situation?
+</p>
 <p>If you were WebRTC you would</p>
 <ol>
-<li><p>Ask A if they want to talk to B.</p>
-</li>
-<li><p>You take A&#39;s phone number/ Instagram id or any other way someone can connect with A.</p>
-</li>
-<li><p>You will tell B that A wants to connect with him and share A&#39;s contact details.</p>
-</li>
-<li><p>You will take B&#39;s contact details and share them with A.</p>
-</li>
-<li><p>A reaches out to B via his preferred contact method, let&#39;s say WhatsApp.</p>
-</li>
-<li><p>A and B start talking and sharing their ideal location and schedule, and book tickets accordingly.</p>
-</li>
+  <li>
+    <p>Ask A if they want to talk to B.</p>
+  </li>
+  <li>
+    <p>
+      You take A&#39;s phone number/ Instagram id or any other way someone can
+      connect with A.
+    </p>
+  </li>
+  <li>
+    <p>
+      You will tell B that A wants to connect with him and share A&#39;s contact
+      details.
+    </p>
+  </li>
+  <li>
+    <p>You will take B&#39;s contact details and share them with A.</p>
+  </li>
+  <li>
+    <p>
+      A reaches out to B via his preferred contact method, let&#39;s say
+      WhatsApp.
+    </p>
+  </li>
+  <li>
+    <p>
+      A and B start talking and sharing their ideal location and schedule, and
+      book tickets accordingly.
+    </p>
+  </li>
 </ol>
-<p>Woohoo, let&#39;s go, you made them communicate with each other without you being there.</p>
+<p>
+  Woohoo, let&#39;s go, you made them communicate with each other without you
+  being there.
+</p>
 <h2 id="the-technical-wizardry-of-webrtc">The Technical Wizardry of WebRTC</h2>
-<p>Let&#39;s look at the points mentioned in the previous section in a simple way.</p>
+<p>
+  Let&#39;s look at the points mentioned in the previous section in a simple
+  way.
+</p>
 <ol>
-<li><p>A wants to connect to B.</p>
-</li>
-<li><p>A finds out all the possible ways someone can connect to it.</p>
-</li>
-<li><p>B finds out all possible ways someone can connect to it.</p>
-</li>
-<li><p>A and B signal this session information via other means. Ex- WhatsApp, server.</p>
-</li>
-<li><p>A connects to B via the most optimal path.</p>
-</li>
-<li><p>A and B also exchange their support media and security.</p>
-</li>
+  <li>
+    <p>A wants to connect to B.</p>
+  </li>
+  <li>
+    <p>A finds out all the possible ways someone can connect to it.</p>
+  </li>
+  <li>
+    <p>B finds out all possible ways someone can connect to it.</p>
+  </li>
+  <li>
+    <p>
+      A and B signal this session information via other means. Ex- WhatsApp,
+      server.
+    </p>
+  </li>
+  <li>
+    <p>A connects to B via the most optimal path.</p>
+  </li>
+  <li>
+    <p>A and B also exchange their support media and security.</p>
+  </li>
 </ol>
 <h3 id="the-core-concepts-of-webrtc">The core concepts of WebRTC</h3>
-<p>Before understanding how WebRTC establishes a between 2 devices, we need to know a few networking topics.</p>
+<p>
+  Before understanding how WebRTC establishes a between 2 devices, we need to
+  know a few networking topics.
+</p>
 <ol>
-<li><p><strong>NAT - Network Address Translation</strong></p>
-<p> NAT is the process by which multiple private IP addresses in a local network are mapped to a single public IP address before communicating with the Internet.<br> Here is a diagram to explain how it handles requests when you go to a website.</p>
-<p> ![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682698756273/d087e1f2-6483-4f49-9d9d-c8db2dab35c5.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682698756273/d087e1f2-6483-4f49-9d9d-c8db2dab35c5.png</a> align=&quot;center&quot;)</p>
-<p> There are different types of NAT but let&#39;s not go in too deep about it.</p>
-</li>
-<li><p><strong>STUN - Session Traversal Utilities for NAT</strong></p>
-<p> Since your device uses NAT to interact with the internet, it does not know its public IP address. It&#39;s just a simple server that sends you your public IP address as the response. Google offers many free STUN servers since it&#39;s cheap to maintain. You can host one on your own too.</p>
-<p> ![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682699731101/3be7a242-e029-4a8f-8910-73fded3b59eb.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682699731101/3be7a242-e029-4a8f-8910-73fded3b59eb.png</a> align=&quot;center&quot;)</p>
-<p> ![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682750151650/63c14212-920d-4d47-a548-534c26ef4163.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682750151650/63c14212-920d-4d47-a548-534c26ef4163.png</a> align=&quot;center&quot;)</p>
-</li>
-<li><p><strong>TURN - Traversal Using Relays around NAT</strong></p>
-<p> TURN is used where STUN cannot be used. If you have a <a href="https://en.wikipedia.org/wiki/Network_address_translation#:~:text=to%20hAddr%3AhPort.-,Symmetric%20NAT,a%20different%20mapping%20is%20used.">Symmetric NAT</a> STUN cannot be used. TURN servers have to pass the data through them to the 2nd device, hence this is expensive to maintain.</p>
-</li>
-<li><p><strong>ICE - Interactive Connectivity Establishment</strong></p>
-<p> An ICE candidate collects all available candidates such as the local IP addresses, and STUN addresses. All the collected addresses are then sent to the 2nd device via SDP.</p>
-</li>
-<li><p><strong>SDP - Session Description Protocol</strong><br> It is a data format that describes ice candidates, networking options, media options, security options, and other stuff.</p>
-<p> We generate an SDP for a device and send it to the 2nd device through any means(WhatsApp, server, QR code, Twitter). SDP is just a string.</p>
-</li>
-<li><p><strong>SDP Signaling</strong></p>
-<p> Sending the SDP to the other device is called signaling</p>
-</li>
+  <li>
+    <p><strong>NAT - Network Address Translation</strong></p>
+    <p>
+      NAT is the process by which multiple private IP addresses in a local
+      network are mapped to a single public IP address before communicating with
+      the Internet.<br />
+      Here is a diagram to explain how it handles requests when you go to a
+      website.
+    </p>
+    <p>
+      ![](<a
+        href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682698756273/d087e1f2-6483-4f49-9d9d-c8db2dab35c5.png"
+        >https://cdn.hashnode.com/res/hashnode/image/upload/v1682698756273/d087e1f2-6483-4f49-9d9d-c8db2dab35c5.png</a
+      >
+      align=&quot;center&quot;)
+    </p>
+    <p>
+      There are different types of NAT but let&#39;s not go in too deep about
+      it.
+    </p>
+  </li>
+  <li>
+    <p><strong>STUN - Session Traversal Utilities for NAT</strong></p>
+    <p>
+      Since your device uses NAT to interact with the internet, it does not know
+      its public IP address. It&#39;s just a simple server that sends you your
+      public IP address as the response. Google offers many free STUN servers
+      since it&#39;s cheap to maintain. You can host one on your own too.
+    </p>
+    <p>
+      ![](<a
+        href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682699731101/3be7a242-e029-4a8f-8910-73fded3b59eb.png"
+        >https://cdn.hashnode.com/res/hashnode/image/upload/v1682699731101/3be7a242-e029-4a8f-8910-73fded3b59eb.png</a
+      >
+      align=&quot;center&quot;)
+    </p>
+    <p>
+      ![](<a
+        href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682750151650/63c14212-920d-4d47-a548-534c26ef4163.png"
+        >https://cdn.hashnode.com/res/hashnode/image/upload/v1682750151650/63c14212-920d-4d47-a548-534c26ef4163.png</a
+      >
+      align=&quot;center&quot;)
+    </p>
+  </li>
+  <li>
+    <p><strong>TURN - Traversal Using Relays around NAT</strong></p>
+    <p>
+      TURN is used where STUN cannot be used. If you have a
+      <a
+        href="https://en.wikipedia.org/wiki/Network_address_translation#:~:text=to%20hAddr%3AhPort.-,Symmetric%20NAT,a%20different%20mapping%20is%20used."
+        >Symmetric NAT</a
+      >
+      STUN cannot be used. TURN servers have to pass the data through them to
+      the 2nd device, hence this is expensive to maintain.
+    </p>
+  </li>
+  <li>
+    <p><strong>ICE - Interactive Connectivity Establishment</strong></p>
+    <p>
+      An ICE candidate collects all available candidates such as the local IP
+      addresses, and STUN addresses. All the collected addresses are then sent
+      to the 2nd device via SDP.
+    </p>
+  </li>
+  <li>
+    <p>
+      <strong>SDP - Session Description Protocol</strong><br />
+      It is a data format that describes ice candidates, networking options,
+      media options, security options, and other stuff.
+    </p>
+    <p>
+      We generate an SDP for a device and send it to the 2nd device through any
+      means(WhatsApp, server, QR code, Twitter). SDP is just a string.
+    </p>
+  </li>
+  <li>
+    <p><strong>SDP Signaling</strong></p>
+    <p>Sending the SDP to the other device is called signaling</p>
+  </li>
 </ol>
-<h3 id="how-webrtc-establishes-the-connection">How WebRTC establishes the connection</h3>
-<p>With the new concepts we just learned, we can describe the steps we discussed previously in a better way.</p>
+<h3 id="how-webrtc-establishes-the-connection">
+  How WebRTC establishes the connection
+</h3>
+<p>
+  With the new concepts we just learned, we can describe the steps we discussed
+  previously in a better way.
+</p>
 <ol>
-<li><p>A wants to connect to B.</p>
-</li>
-<li><p>A creates an &quot;offer&quot;, it finds all ICE candidates and other stuff and generates the SDP, The offer is the SDP.</p>
-</li>
-<li><p>A signals the offer to B through any means.</p>
-</li>
-<li><p>B creates the &quot;answer&quot; after setting A&#39;s offer.</p>
-</li>
-<li><p>B signals the offer to A through any means.</p>
-</li>
-<li><p>A and B are now connected.</p>
-</li>
+  <li>
+    <p>A wants to connect to B.</p>
+  </li>
+  <li>
+    <p>
+      A creates an &quot;offer&quot;, it finds all ICE candidates and other
+      stuff and generates the SDP, The offer is the SDP.
+    </p>
+  </li>
+  <li>
+    <p>A signals the offer to B through any means.</p>
+  </li>
+  <li>
+    <p>B creates the &quot;answer&quot; after setting A&#39;s offer.</p>
+  </li>
+  <li>
+    <p>B signals the offer to A through any means.</p>
+  </li>
+  <li>
+    <p>A and B are now connected.</p>
+  </li>
 </ol>
-<p>Once the connection is established, we can share anything over the connection. Such as text, video, voice, files, etc.</p>
+<p>
+  Once the connection is established, we can share anything over the connection.
+  Such as text, video, voice, files, etc.
+</p>
 <h3 id="implementing-a-basic-webrtc-chat">Implementing a basic WebRTC chat</h3>
-<p>The WebRTC API is already available in your browser, you don&#39;t have to install any packages.<br>Let&#39;s start by opening two empty browser windows side by side and opening the console.</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682752360222/5ac9340a-3c32-438d-9c1c-da0b731db802.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682752360222/5ac9340a-3c32-438d-9c1c-da0b731db802.png</a> align=&quot;center&quot;)</p>
-<p>now, let&#39;s create a local connection peer and a remote connection peer using the RTCPeerConnection.</p>
+<p>
+  The WebRTC API is already available in your browser, you don&#39;t have to
+  install any packages.<br />Let&#39;s start by opening two empty browser
+  windows side by side and opening the console.
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682752360222/5ac9340a-3c32-438d-9c1c-da0b731db802.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682752360222/5ac9340a-3c32-438d-9c1c-da0b731db802.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  now, let&#39;s create a local connection peer and a remote connection peer
+  using the RTCPeerConnection.
+</p>
 <pre><code class="language-javascript">// in first console
-const localConnection = new RTCPeerConnection()
+            const localConnection = new RTCPeerConnection()
 
-// in second console
-const remoteConnection = new RTCPeerConnection()
-</code></pre>
-<p>next, we will create a callback function that will print out the SDP every time a new ICE candidate is generated.</p>
+            // in second console
+            const remoteConnection = new RTCPeerConnection()
+      </code></pre>
+<p>
+  next, we will create a callback function that will print out the SDP every
+  time a new ICE candidate is generated.
+</p>
 <pre><code class="language-javascript">// in first console
-localConnection.onicecandidate = e =&gt;  {
-console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
- console.log(JSON.stringify(localConnection.localDescription))
-}
+            localConnection.onicecandidate = e =&gt; {
+            console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
+            console.log(JSON.stringify(localConnection.localDescription))
+            }
 
-// in second console
-remoteConnection.onicecandidate = e =&gt;  {
-console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
- console.log(JSON.stringify(remoteConnection.localDescription) )
-}
-</code></pre>
-<p>Next, we create a data channel using which we can send and receive messages. Then we add a callback function to print out the message we receive. and print when the connection is opened and closed.</p>
+            // in second console
+            remoteConnection.onicecandidate = e =&gt; {
+            console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
+            console.log(JSON.stringify(remoteConnection.localDescription) )
+            }
+      </code></pre>
+<p>
+  Next, we create a data channel using which we can send and receive messages.
+  Then we add a callback function to print out the message we receive. and print
+  when the connection is opened and closed.
+</p>
 <pre><code class="language-javascript">// in the first console
-const sendChannel = localConnection.createDataChannel(&quot;sendChannel&quot;);
+            const sendChannel = localConnection.createDataChannel(&quot;sendChannel&quot;);
 
-sendChannel.onmessage = e =&gt;  console.log(&quot;messsage received!!!&quot;  + e.data )
-sendChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
-sendChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
-</code></pre>
-<p>then we create an offer, which is an SDP to send to the remoteConnection. and set that offer as the local description, which basically means the local user.</p>
-<pre><code class="language-javascript">localConnection.createOffer().then(o =&gt; localConnection.setLocalDescription(o))
-</code></pre>
-<p>you will see the SDP printed on your console after this. You need to copy the object you see below and set it as the offer in the remoteConnection using any means since both are on the same computer we can just copy and paste.</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682753313663/5182fc1b-057a-49a2-87f9-977e2245a4c7.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682753313663/5182fc1b-057a-49a2-87f9-977e2245a4c7.png</a> align=&quot;center&quot;)</p>
+            sendChannel.onmessage = e =&gt; console.log(&quot;messsage received!!!&quot; + e.data )
+            sendChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
+            sendChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
+      </code></pre>
+<p>
+  then we create an offer, which is an SDP to send to the remoteConnection. and
+  set that offer as the local description, which basically means the local user.
+</p>
+<pre><code class="language-javascript">localConnection.createOffer().then(o =&gt;
+            localConnection.setLocalDescription(o))
+      </code></pre>
+<p>
+  you will see the SDP printed on your console after this. You need to copy the
+  object you see below and set it as the offer in the remoteConnection using any
+  means since both are on the same computer we can just copy and paste.
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682753313663/5182fc1b-057a-49a2-87f9-977e2245a4c7.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682753313663/5182fc1b-057a-49a2-87f9-977e2245a4c7.png</a
+  >
+  align=&quot;center&quot;)
+</p>
 <p>in the second console,</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682753876395/8164b4e1-c7d4-4fe8-91d2-772463e2e11c.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682753876395/8164b4e1-c7d4-4fe8-91d2-772463e2e11c.png</a> align=&quot;center&quot;)</p>
-<p>then we create a data channel and callback functions like we previously did</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682753876395/8164b4e1-c7d4-4fe8-91d2-772463e2e11c.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682753876395/8164b4e1-c7d4-4fe8-91d2-772463e2e11c.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  then we create a data channel and callback functions like we previously did
+</p>
 <pre><code class="language-javascript">remoteConnection.ondatachannel= e =&gt; {
-      const receiveChannel = e.channel;
-      receiveChannel.onmessage =e =&gt;  console.log(&quot;messsage received!!!&quot;  +             e.data )
-      receiveChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
-      receiveChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
-      remoteConnection.channel = receiveChannel;
+            const receiveChannel = e.channel;
+            receiveChannel.onmessage =e =&gt; console.log(&quot;messsage received!!!&quot; + e.data )
+            receiveChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
+            receiveChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
+            remoteConnection.channel = receiveChannel;
 
-}
-</code></pre>
+            }
+      </code></pre>
 <p>Then we set the offer as the remote description in the second console.</p>
 <pre><code class="language-javascript">remoteConnection.setRemoteDescription(offer).then(a=&gt;console.log(&quot;done&quot;))
-</code></pre>
+      </code></pre>
 <p>you will see the answer SDP, copy it and paste it into the first console.</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754735060/fdca3454-5090-477d-ba4a-04d92b6e02e0.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682754735060/fdca3454-5090-477d-ba4a-04d92b6e02e0.png</a> align=&quot;center&quot;)</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754748365/c187bb09-f0ae-4644-a361-4418b7745167.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682754748365/c187bb09-f0ae-4644-a361-4418b7745167.png</a> align=&quot;center&quot;)</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754735060/fdca3454-5090-477d-ba4a-04d92b6e02e0.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682754735060/fdca3454-5090-477d-ba4a-04d92b6e02e0.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754748365/c187bb09-f0ae-4644-a361-4418b7745167.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682754748365/c187bb09-f0ae-4644-a361-4418b7745167.png</a
+  >
+  align=&quot;center&quot;)
+</p>
 <p>then we set the answer as the remote description.</p>
-<pre><code class="language-javascript">localConnection.setRemoteDescription (answer).then(a=&gt;console.log(&quot;done&quot;))
-</code></pre>
-<p>now, you will see this on your console, it means that the connection is established between both the consoles.</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754951776/14f92360-3583-49a7-9223-e6dc4177d6f2.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682754951776/14f92360-3583-49a7-9223-e6dc4177d6f2.png</a> align=&quot;center&quot;)</p>
+<pre><code class="language-javascript">localConnection.setRemoteDescription
+            (answer).then(a=&gt;console.log(&quot;done&quot;))
+      </code></pre>
+<p>
+  now, you will see this on your console, it means that the connection is
+  established between both the consoles.
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754951776/14f92360-3583-49a7-9223-e6dc4177d6f2.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682754951776/14f92360-3583-49a7-9223-e6dc4177d6f2.png</a
+  >
+  align=&quot;center&quot;)
+</p>
 <p>You can now use the channel to send messages to the other console.</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754992013/185be93f-f1d1-4aa4-b50b-4d043d204d1d.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682754992013/185be93f-f1d1-4aa4-b50b-4d043d204d1d.png</a> align=&quot;center&quot;)</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755004272/4437d5cc-9c8b-4432-9db8-9de0cef0c587.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682755004272/4437d5cc-9c8b-4432-9db8-9de0cef0c587.png</a> align=&quot;center&quot;)</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755018116/ad7987ae-21a0-45a6-87f8-04213c4a22a7.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682755018116/ad7987ae-21a0-45a6-87f8-04213c4a22a7.png</a> align=&quot;center&quot;)</p>
-<p>![](<a href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755025762/a57949b8-f7d3-404d-92ea-dd0cf29a70e5.png">https://cdn.hashnode.com/res/hashnode/image/upload/v1682755025762/a57949b8-f7d3-404d-92ea-dd0cf29a70e5.png</a> align=&quot;center&quot;)</p>
-<p>Let&#39;s go! we just created peer-to-peer messaging right in our browser with a few lines of code. This is the benefit of WebRTC.</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682754992013/185be93f-f1d1-4aa4-b50b-4d043d204d1d.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682754992013/185be93f-f1d1-4aa4-b50b-4d043d204d1d.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755004272/4437d5cc-9c8b-4432-9db8-9de0cef0c587.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682755004272/4437d5cc-9c8b-4432-9db8-9de0cef0c587.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755018116/ad7987ae-21a0-45a6-87f8-04213c4a22a7.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682755018116/ad7987ae-21a0-45a6-87f8-04213c4a22a7.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  ![](<a
+    href="https://cdn.hashnode.com/res/hashnode/image/upload/v1682755025762/a57949b8-f7d3-404d-92ea-dd0cf29a70e5.png"
+    >https://cdn.hashnode.com/res/hashnode/image/upload/v1682755025762/a57949b8-f7d3-404d-92ea-dd0cf29a70e5.png</a
+  >
+  align=&quot;center&quot;)
+</p>
+<p>
+  Let&#39;s go! we just created peer-to-peer messaging right in our browser with
+  a few lines of code. This is the benefit of WebRTC.
+</p>
 <p>Here&#39;s the complete code for Both consoles for your reference.</p>
-<pre><code class="language-javascript">// in the first console 
-const localConnection = new RTCPeerConnection()
- 
-
-localConnection.onicecandidate = e =&gt;  {
-console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
- console.log(JSON.stringify(localConnection.localDescription))
-}
+<pre><code class="language-javascript">// in the first console
+            const localConnection = new RTCPeerConnection()
 
 
-const sendChannel = localConnection.createDataChannel(&quot;sendChannel&quot;);
- sendChannel.onmessage =e =&gt;  console.log(&quot;messsage received!!!&quot;  + e.data )
-   sendChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
-     sendChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
+            localConnection.onicecandidate = e =&gt; {
+            console.log(&quot; NEW ice candidate!! on localconnection reprinting SDP &quot; )
+            console.log(JSON.stringify(localConnection.localDescription))
+            }
 
 
-localConnection.createOffer().then(o =&gt; localConnection.setLocalDescription(o) )
-</code></pre>
+            const sendChannel = localConnection.createDataChannel(&quot;sendChannel&quot;);
+            sendChannel.onmessage =e =&gt; console.log(&quot;messsage received!!!&quot; + e.data )
+            sendChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
+            sendChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
+
+
+            localConnection.createOffer().then(o =&gt; localConnection.setLocalDescription(o) )
+      </code></pre>
 <pre><code class="language-javascript">// Take the offer and save it as the offer here
-// const offer = YOUR SDP
-const remoteConnection = new RTCPeerConnection()
+            // const offer = YOUR SDP
+            const remoteConnection = new RTCPeerConnection()
 
-remoteConnection.onicecandidate = e =&gt;  {
-console.log(&quot; NEW ice candidnat!! on localconnection reprinting SDP &quot; )
- console.log(JSON.stringify(remoteConnection.localDescription) )
-}
-
- 
-remoteConnection.ondatachannel= e =&gt; {
-
-      const receiveChannel = e.channel;
-      receiveChannel.onmessage =e =&gt;  console.log(&quot;messsage received!!!&quot;  + e.data )
-      receiveChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
-      receiveChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
-      remoteConnection.channel = receiveChannel;
-
-}
+            remoteConnection.onicecandidate = e =&gt; {
+            console.log(&quot; NEW ice candidnat!! on localconnection reprinting SDP &quot; )
+            console.log(JSON.stringify(remoteConnection.localDescription) )
+            }
 
 
-remoteConnection.setRemoteDescription(offer).then(a=&gt;console.log(&quot;done&quot;))
+            remoteConnection.ondatachannel= e =&gt; {
 
-//create answer
-await remoteConnection.createAnswer().then(a =&gt; remoteConnection.setLocalDescription(a)).then(a=&gt;
-console.log(JSON.stringify(remoteConnection.localDescription)))
-//send the anser to the client
-</code></pre>
+            const receiveChannel = e.channel;
+            receiveChannel.onmessage =e =&gt; console.log(&quot;messsage received!!!&quot; + e.data )
+            receiveChannel.onopen = e =&gt; console.log(&quot;open!!!!&quot;);
+            receiveChannel.onclose =e =&gt; console.log(&quot;closed!!!!!!&quot;);
+            remoteConnection.channel = receiveChannel;
+
+            }
+
+
+            remoteConnection.setRemoteDescription(offer).then(a=&gt;console.log(&quot;done&quot;))
+
+            //create answer
+            await remoteConnection.createAnswer().then(a =&gt; remoteConnection.setLocalDescription(a)).then(a=&gt;
+            console.log(JSON.stringify(remoteConnection.localDescription)))
+            //send the anser to the client
+      </code></pre>
 <pre><code class="language-javascript">// back to the first console after the previous step
-// const answer = YOUR ANSWER SDP
-localConnection.setRemoteDescription (answer).then(a=&gt;console.log(&quot;done&quot;))
-</code></pre>
+            // const answer = YOUR ANSWER SDP
+            localConnection.setRemoteDescription (answer).then(a=&gt;console.log(&quot;done&quot;))
+      </code></pre>
 <p>Now you know how WebRTC works under the hood and can use it confidently!</p>
-<p>In conclusion, we learnt how WebRTC works from both a layman&#39;s perspective and a technical perspective. Additionally, we learnt how to implement a basic WebRTC chat using the WebRTC API already available in modern browsers. Overall, WebRTC has become a popular technology that is changing the way we communicate online.</p>
-<p>Thank you for taking the time to read this article! If you found it helpful or informative, we would greatly appreciate it if you could give it a like or share it with others who might benefit from it. Thank you again for your support!</p>
-
+<p>
+  In conclusion, we learnt how WebRTC works from both a layman&#39;s perspective
+  and a technical perspective. Additionally, we learnt how to implement a basic
+  WebRTC chat using the WebRTC API already available in modern browsers.
+  Overall, WebRTC has become a popular technology that is changing the way we
+  communicate online.
+</p>
+<p>
+  Thank you for taking the time to read this article! If you found it helpful or
+  informative, we would greatly appreciate it if you could give it a like or
+  share it with others who might benefit from it. Thank you again for your
+  support!
+</p>
