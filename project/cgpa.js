@@ -8,7 +8,7 @@ function calculateCGPA() {
     {
       name: "DSF",
       marks: parseInt(document.getElementById("dsf").value),
-      credits: 4,
+      credits: 3,
     },
     {
       name: "MML",
@@ -18,7 +18,7 @@ function calculateCGPA() {
     {
       name: "AI",
       marks: parseInt(document.getElementById("ai").value),
-      credits: 4,
+      credits: 3,
     },
     {
       name: "LD",
