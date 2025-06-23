@@ -291,24 +291,37 @@ ul li time {
     font-size: 1.8em;
   }
   h2 {
-    font-size: 1.4em;
+    font-size: 1.5em;
   }
   p {
     font-size: 0.9em;
   }
   nav a:not(:last-child) {
-    padding: 0;
+    padding: 0 6px 0 0;
+  }
+  pre {
+    overflow-x: auto;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
   }
 }
 
-/* Mobile-specific adjustments */
 @media (max-width: 480px) {
   body {
-    padding: 15px;
+    padding: 10px;
   }
   nav a {
     display: block;
     margin: 10px 0;
+  }
+  pre {
+    overflow-x: auto;
+  }
+  table {
+    display: block;
+    overflow-x: auto;
   }
 }
 
