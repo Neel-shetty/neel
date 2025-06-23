@@ -1,3 +1,33 @@
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('./assets/font/geist-font-1.5.0/fonts/Geist/webfonts/Geist[wght].woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Sans';
+  src: url('./assets/font/geist-font-1.5.0/fonts/Geist/webfonts/Geist-Italic[wght].woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./assets/font/geist-font-1.5.0/fonts/GeistMono/webfonts/GeistMono[wght].woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./assets/font/geist-font-1.5.0/fonts/GeistMono/webfonts/GeistMono-Italic[wght].woff2') format('woff2-variations');
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+}
+
 /*
   The CSS in this style tag is based off of Bear Blog's default CSS.
   https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
@@ -32,12 +62,12 @@ body {
   word-wrap: break-word;
   overflow-wrap: break-word;
   color: var(--black);
+  min-height: 100vh;
 }
 html,
 body,
-button,
-code {
-  font-family: "iA Writer Mono", monospace;
+button {
+  font-family: "Geist Sans", sans-serif;
 }
 h1,
 strong,
@@ -107,8 +137,13 @@ header {
 
 a {
   color: var(--black);
-  text-decoration-thickness: 0.3ex;
-  text-underline-offset: 0.3ex;
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--gray);
+  /* transform: scale(1.01); */
+  /* transition: all 0.2s ease-in-out; */
 }
 
 nav {
@@ -175,6 +210,7 @@ img {
   height: auto;
 }
 code {
+  font-family: "Geist Mono", monospace;
   padding: 2px 5px;
   background-color: var(--moretransblack);
   font-weight: bold;
@@ -247,7 +283,51 @@ ul li time {
 }
 
 @media (max-width: 600px) {
+  html,
+  body {
+    padding: 10px;
+  }
+  h1 {
+    font-size: 1.8em;
+  }
+  h2 {
+    font-size: 1.4em;
+  }
+  p {
+    font-size: 0.9em;
+  }
   nav a:not(:last-child) {
     padding: 0;
   }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 480px) {
+  body {
+    padding: 15px;
+  }
+  nav a {
+    display: block;
+    margin: 10px 0;
+  }
+}
+
+body a {
+  margin-bottom: 10px;
+  display: inline-block;
+}
+
+.twitter-tweet {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 550px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 5px;
 }
